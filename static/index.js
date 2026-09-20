@@ -73,6 +73,62 @@ function getWisp() {
 	return getStoredWisp() || defaultWisp();
 }
 
+// A wisp server may be saved in localStorage but dead (it happens — community
+// servers come and go). Probe candidates in order and use the first one whose
+// WebSocket actually opens; otherwise fall back to the first candidate so the
+// error the user sees matches their explicit choice.
+async function probeWisp(url, timeoutMs = 6000) {
+	return new Promise((resolve) => {
+		let settled = false;
+		const done = (v) => {
+			if (!settled) {
+				settled = true;
+				resolve(v);
+			}
+		};
+		try {
+			const ws = new WebSocket(url);
+			const t = setTimeout(() => {
+				try {
+					ws.close();
+				} catch {}
+				done(false);
+			}, timeoutMs);
+			ws.onopen = () => {
+				clearTimeout(t);
+				try {
+					ws.close();
+				} catch {}
+				done(true);
+			};
+			ws.onerror = () => {
+				clearTimeout(t);
+				done(false);
+			};
+			ws.onclose = () => {
+				clearTimeout(t);
+				done(false);
+			};
+		} catch {
+			done(false);
+		}
+	});
+}
+
+async function resolveWisp() {
+	const candidates = [];
+	const stored = getStoredWisp();
+	if (stored) candidates.push(stored);
+	const discovered = await discoverWisp();
+	if (!candidates.includes(discovered)) candidates.push(discovered);
+	if (!candidates.includes(DEFAULT_PUBLIC_WISP)) candidates.push(DEFAULT_PUBLIC_WISP);
+
+	for (const candidate of candidates) {
+		if (await probeWisp(candidate)) return candidate;
+	}
+	return candidates[0];
+}
+
 /* ---------- tabs ---------- */
 
 const tabs = []; // { id, url (raw), title }
@@ -183,8 +239,9 @@ window.addEventListener("load", async () => {
 	setStatus("", "Starting…");
 	try {
 		await registerSW();
-		// Stored user choice > wisp-config.json (owner's tunnel) > default server.
-		const wispUrl = getStoredWisp() || (await discoverWisp());
+		// Probe stored > discovered (owner's tunnel) > default; use the first
+		// server that actually accepts a connection.
+		const wispUrl = await resolveWisp();
 		if ((await connection.getTransport()) !== ROOT + "epoxy/index.mjs") {
 			await connection.setTransport(ROOT + "epoxy/index.mjs", [{ wisp: wispUrl }]);
 		}
@@ -241,22 +298,29 @@ engineMirror.addEventListener("change", () => setEngine(engineMirror.value));
 
 /* ---------- settings (wisp server can be swapped without a reload) ---------- */
 
-$("settings-save").addEventListener("click", () => {
+$("settings-save").addEventListener("click", async () => {
 	const next = wispInput.value.trim();
-	try {
-		localStorage.setItem("ripple-wisp", next);
-	} catch {}
-	if (next && ready) {
-		// Re-point the transport at the new wisp server immediately.
-		connection
-			.setTransport(ROOT + "epoxy/index.mjs", [{ wisp: next }])
-			.then(() => {
-				setStatus("ready", "Connected");
-				updateAbout();
-			})
-			.catch((err) => setStatus("error", String(err)));
-	}
 	$("settings-modal").hidden = true;
+	if (!next) {
+		try {
+			localStorage.removeItem("ripple-wisp");
+		} catch {}
+		return;
+	}
+	setStatus("", "Testing " + next + "…");
+	if (await probeWisp(next)) {
+		try {
+			localStorage.setItem("ripple-wisp", next);
+		} catch {}
+		if (ready) {
+			await connection.setTransport(ROOT + "epoxy/index.mjs", [{ wisp: next }]);
+			setStatus("ready", "Connected");
+		}
+	} else {
+		// keep the old setting; the dead URL was not saved
+		setStatus(ready ? "ready" : "error", "That server did not respond — not saved");
+		setTimeout(updateAbout, 2500);
+	}
 });
 
 /* ---------- navigation ---------- */
