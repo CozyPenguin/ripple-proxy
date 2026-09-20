@@ -10,6 +10,7 @@ const addressInput = $("uv-address");
 const engineSelect = $("uv-search-engine");
 const engineMirror = $("engine-mirror");
 const wispInput = $("wisp-url");
+const loadIconInput = $("load-icon-url");
 const errorText = $("uv-error");
 const swDot = $("sw-dot");
 const swText = $("sw-text");
@@ -22,6 +23,9 @@ const barForm = $("bar-form");
 const barAddress = $("bar-address");
 const frame = $("uv-frame");
 const progress = document.querySelector("#progress span");
+const bootVeil = $("boot-veil");
+const frameVeil = $("frame-veil");
+const themeSwatches = $("theme-swatches");
 
 const PREFIX = __uv$config.prefix;
 const connection = new BareMux.BareMuxConnection(ROOT + "baremux/worker.js");
@@ -29,6 +33,70 @@ const connection = new BareMux.BareMuxConnection(ROOT + "baremux/worker.js");
 let ready = false;
 let frameURL = ""; // raw URL currently loaded in the iframe
 let nextTabId = 1;
+
+/* ---------- themes ---------- */
+
+const THEMES = [
+	{ id: "midnight", color: "#f5f5f5", label: "Midnight" },
+	{ id: "paper", color: "#1a1a1a", label: "Paper" },
+	{ id: "ocean", color: "#7dd3fc", label: "Ocean" },
+	{ id: "forest", color: "#86efac", label: "Forest" },
+	{ id: "sunset", color: "#fb923c", label: "Sunset" },
+	{ id: "grape", color: "#c4b5fd", label: "Grape" },
+];
+
+function applyTheme(id) {
+	const theme = THEMES.find((t) => t.id === id) || THEMES[0];
+	document.documentElement.setAttribute("data-theme", theme.id);
+	for (const sw of themeSwatches.children) {
+		sw.classList.toggle("active", sw.dataset.theme === theme.id);
+	}
+	try {
+		localStorage.setItem("ripple-theme", theme.id);
+	} catch {}
+}
+
+try {
+	applyTheme(localStorage.getItem("ripple-theme") || "midnight");
+} catch {
+	applyTheme("midnight");
+}
+
+for (const theme of THEMES) {
+	const sw = document.createElement("button");
+	sw.className = "swatch";
+	sw.dataset.theme = theme.id;
+	sw.title = theme.label;
+	sw.setAttribute("aria-label", theme.label + " theme");
+	sw.style.background = theme.color;
+	sw.addEventListener("click", () => applyTheme(theme.id));
+	themeSwatches.appendChild(sw);
+}
+
+/* ---------- custom loading icon ---------- */
+
+function applyLoadIcon(url) {
+	for (const img of document.querySelectorAll(".load-img")) {
+		if (url) {
+			img.src = url;
+			img.hidden = false;
+			img.onerror = () => {
+				img.hidden = true;
+			};
+		} else {
+			img.removeAttribute("src");
+			img.hidden = true;
+		}
+	}
+	for (const ripple of document.querySelectorAll(".load-ripple")) {
+		ripple.style.display = url ? "none" : "";
+	}
+}
+
+try {
+	applyLoadIcon(localStorage.getItem("ripple-load-icon") || "");
+	loadIconInput.value = localStorage.getItem("ripple-load-icon") || "";
+} catch {}
 
 /* ---------- wisp server ---------- */
 
@@ -231,6 +299,10 @@ function loadIntoFrame(url) {
 	frameURL = url;
 	startProgress();
 	frame.src = PREFIX + __uv$config.encodeUrl(url);
+	// only veil if the page is slow — avoids flashing on fast loads
+	showFrameVeil.t = setTimeout(() => {
+		if (frameURL === url) frameVeil.hidden = false;
+	}, 500);
 }
 
 /* ---------- boot: register the service worker and transport up front ---------- */
@@ -248,14 +320,33 @@ window.addEventListener("load", async () => {
 		ready = true;
 		setStatus("ready", "Connected");
 		updateAbout();
+		hideBootVeil();
 		setTimeout(() => (status.style.opacity = "0"), 2500);
 	} catch (err) {
 		ready = false;
 		setStatus("error", "Proxy unavailable: " + err.message);
 		showError(String(err));
 		updateAbout();
+		hideBootVeil();
 	}
 });
+
+// never leave the user staring at the boot veil
+setTimeout(hideBootVeil, 7000);
+
+function hideBootVeil() {
+	if (bootVeil) bootVeil.hidden = true;
+}
+
+function showFrameVeil() {
+	clearTimeout(showFrameVeil.t);
+	frameVeil.hidden = false;
+}
+
+function hideFrameVeil() {
+	clearTimeout(showFrameVeil.t);
+	frameVeil.hidden = true;
+}
 
 function setStatus(cls, text) {
 	swDot.className = "dot" + (cls ? " " + cls : "");
@@ -300,7 +391,21 @@ engineMirror.addEventListener("change", () => setEngine(engineMirror.value));
 
 $("settings-save").addEventListener("click", async () => {
 	const next = wispInput.value.trim();
+	const icon = loadIconInput.value.trim();
 	$("settings-modal").hidden = true;
+
+	// loading icon: accept http(s) or data:image URIs only
+	if (icon && !/^(https?:\/\/|data:image\/)/i.test(icon)) {
+		showError("Loading icon must be an http(s) or data:image URL.");
+	} else {
+		errorText.hidden = true;
+		try {
+			if (icon) localStorage.setItem("ripple-load-icon", icon);
+			else localStorage.removeItem("ripple-load-icon");
+		} catch {}
+		applyLoadIcon(icon);
+	}
+
 	if (!next) {
 		try {
 			localStorage.removeItem("ripple-wisp");
@@ -308,6 +413,7 @@ $("settings-save").addEventListener("click", async () => {
 		return;
 	}
 	setStatus("", "Testing " + next + "…");
+	status.style.opacity = "1";
 	if (await probeWisp(next)) {
 		try {
 			localStorage.setItem("ripple-wisp", next);
@@ -315,12 +421,21 @@ $("settings-save").addEventListener("click", async () => {
 		if (ready) {
 			await connection.setTransport(ROOT + "epoxy/index.mjs", [{ wisp: next }]);
 			setStatus("ready", "Connected");
+			setTimeout(() => (status.style.opacity = "0"), 2000);
 		}
 	} else {
 		// keep the old setting; the dead URL was not saved
 		setStatus(ready ? "ready" : "error", "That server did not respond — not saved");
 		setTimeout(updateAbout, 2500);
 	}
+});
+
+$("load-icon-default").addEventListener("click", () => {
+	loadIconInput.value = "";
+	try {
+		localStorage.removeItem("ripple-load-icon");
+	} catch {}
+	applyLoadIcon("");
 });
 
 /* ---------- navigation ---------- */
@@ -400,6 +515,7 @@ function finishProgress() {
 
 frame.addEventListener("load", () => {
 	finishProgress();
+	hideFrameVeil();
 	const tab = activeTab();
 	if (!tab || !frameURL) return;
 	tab.url = frameURL;

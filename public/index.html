@@ -19,20 +19,31 @@
 		<script src="/uv/uv.config.js"></script>
 	</head>
 	<body>
+		<!-- boot loading veil -->
+		<div class="veil" id="boot-veil">
+			<div class="load-box">
+				<div class="load-icon">
+					<div class="load-ripple"><i></i><i></i><i></i></div>
+					<img class="load-img" alt="" hidden="hidden" />
+				</div>
+				<div class="load-text" id="boot-text">Waking the ripples…</div>
+			</div>
+		</div>
+
 		<!-- sidebar -->
 		<aside id="sidebar">
-			<button class="side-row" id="btn-new-tab">
-				<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+			<button class="side-row" id="btn-new-tab" title="New tab">
+				<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 8.8v6.4M8.8 12h6.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
 				<span>New Tab</span>
 			</button>
 			<div id="tab-list"></div>
 			<div class="sidebar-bottom">
-				<button class="side-row" id="btn-settings">
-					<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+				<button class="side-row" id="btn-settings" title="Settings">
+					<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 7.2h8.2M17.8 7.2H20M4 16.8h5.2M13.8 16.8H20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="15" cy="7.2" r="2.3" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="10.9" cy="16.8" r="2.3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
 					<span>Settings</span>
 				</button>
-				<button class="side-row" id="btn-about">
-					<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
+				<button class="side-row" id="btn-about" title="About">
+					<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 11.4v4.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="8.3" r="1.1" fill="currentColor"/><path d="M6.2 17.5a8.5 8.5 0 0 0 11.6 0" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.45"/></svg>
 					<span>About</span>
 				</button>
 			</div>
@@ -43,13 +54,13 @@
 			<header id="topbar">
 				<div class="nav-group">
 					<button class="ib" id="btn-back" title="Back" aria-label="Back">
-						<svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						<svg viewBox="0 0 24 24" width="16" height="16"><path d="M11.5 7L7 12l4.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 7l-4.5 5 4.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/></svg>
 					</button>
 					<button class="ib" id="btn-forward" title="Forward" aria-label="Forward">
-						<svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						<svg viewBox="0 0 24 24" width="16" height="16"><path d="M12.5 7L17 12l-4.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7l4.5 5L7 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/></svg>
 					</button>
 					<button class="ib" id="btn-reload" title="Reload" aria-label="Reload">
-						<svg viewBox="0 0 24 24" width="15" height="15"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 3v4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						<svg viewBox="0 0 24 24" width="15" height="15"><path d="M19.5 12a7.5 7.5 0 1 1-2.1-5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19.7 3.6v3.9h-3.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/></svg>
 					</button>
 				</div>
 				<form id="bar-form" autocomplete="off">
@@ -60,7 +71,7 @@
 				</form>
 				<div class="nav-group">
 					<button class="ib" id="btn-open" title="Open in new window" aria-label="Open in new window">
-						<svg viewBox="0 0 24 24" width="15" height="15"><path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+						<svg viewBox="0 0 24 24" width="15" height="15"><path d="M13.5 4.5H19.5V10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.5 4.5L11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 5.5H6A1.5 1.5 0 0 0 4.5 7v11A1.5 1.5 0 0 0 6 19.5h11a1.5 1.5 0 0 0 1.5-1.5v-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
 					</button>
 				</div>
 			</header>
@@ -70,7 +81,7 @@
 				<div class="wordmark">ripple</div>
 				<form id="uv-form" autocomplete="off">
 					<div class="search-pill">
-						<svg class="sp-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+						<svg class="sp-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.9 15.9L20.5 20.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M11 8.2a2.8 2.8 0 0 1 2.8 2.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.45"/></svg>
 						<input
 							id="uv-address"
 							type="text"
@@ -85,18 +96,18 @@
 							<option value="https://search.brave.com/search?q=%s">Brave</option>
 						</select>
 						<button class="go" type="submit" aria-label="Go">
-							<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+							<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5.5 12h13M12.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 						</button>
 					</div>
 				</form>
 				<p id="uv-error" class="error" hidden></p>
 				<div class="quicklinks">
-					<button data-url="https://www.google.com"><span class="tile"><img src="/icons/google.com.png" alt="" /></span>Google</button>
-					<button data-url="https://www.youtube.com"><span class="tile"><img src="/icons/youtube.com.png" alt="" /></span>YouTube</button>
-					<button data-url="https://discord.com"><span class="tile"><img src="/icons/discord.com.png" alt="" /></span>Discord</button>
-					<button data-url="https://www.reddit.com"><span class="tile"><img src="/icons/reddit.com.png" alt="" /></span>Reddit</button>
-					<button data-url="https://open.spotify.com"><span class="tile"><img src="/icons/open.spotify.com.png" alt="" /></span>Spotify</button>
-					<button data-url="https://github.com"><span class="tile"><img src="/icons/github.com.png" alt="" /></span>GitHub</button>
+					<button data-url="https://www.google.com"><span class="tile"><img src="icons/google.com.png" alt="" /></span>Google</button>
+					<button data-url="https://www.youtube.com"><span class="tile"><img src="icons/youtube.com.png" alt="" /></span>YouTube</button>
+					<button data-url="https://discord.com"><span class="tile"><img src="icons/discord.com.png" alt="" /></span>Discord</button>
+					<button data-url="https://www.reddit.com"><span class="tile"><img src="icons/reddit.com.png" alt="" /></span>Reddit</button>
+					<button data-url="https://open.spotify.com"><span class="tile"><img src="icons/open.spotify.com.png" alt="" /></span>Spotify</button>
+					<button data-url="https://github.com"><span class="tile"><img src="icons/github.com.png" alt="" /></span>GitHub</button>
 				</div>
 			</section>
 
@@ -104,6 +115,15 @@
 			<section id="viewport" hidden>
 				<div id="progress"><span></span></div>
 				<iframe id="uv-frame" title="Proxied page" allow="fullscreen"></iframe>
+				<div class="veil" id="frame-veil" hidden>
+					<div class="load-box">
+						<div class="load-icon">
+							<div class="load-ripple"><i></i><i></i><i></i></div>
+							<img class="load-img" alt="" hidden="hidden" />
+						</div>
+						<div class="load-text" id="frame-veil-text">Summoning the page…</div>
+					</div>
+				</div>
 			</section>
 		</div>
 
@@ -117,6 +137,10 @@
 		<div class="modal" id="settings-modal" hidden>
 			<div class="modal-card">
 				<h2>Settings</h2>
+				<div class="modal-row" style="align-items: flex-start">
+					<span style="padding-top: 3px">Theme</span>
+					<div class="swatches" id="theme-swatches"></div>
+				</div>
 				<label class="modal-row">
 					<span>Search engine</span>
 					<select id="engine-mirror">
@@ -126,7 +150,27 @@
 						<option value="https://search.brave.com/search?q=%s">Brave</option>
 					</select>
 				</label>
-				<button class="modal-close" id="settings-close">Done</button>
+				<label class="modal-row" style="align-items: flex-start">
+					<span style="padding-top: 8px">Loading icon URL</span>
+					<input id="load-icon-url" type="text" spellcheck="false" placeholder="https://…/icon.png (blank = default)" />
+				</label>
+				<p class="modal-hint">
+					Shown in the loading screen while a page is slow. Any image URL or
+					<b>data:image/…</b> URI works.
+				</p>
+				<label class="modal-row">
+					<span>Wisp server</span>
+					<input id="wisp-url" type="text" spellcheck="false" placeholder="wss://…" />
+				</label>
+				<p class="modal-hint">
+					Use <b>wss://</b> on https sites and <b>ws://</b> on http sites
+					(like localhost). Wrong scheme = pages won't load. The default is a
+					third-party community instance — self-host for reliability.
+				</p>
+				<div class="modal-actions">
+					<button class="ghost-btn" id="load-icon-default">Reset loading icon</button>
+					<button class="modal-close" id="settings-save">Save</button>
+				</div>
 			</div>
 		</div>
 
@@ -135,8 +179,9 @@
 			<div class="modal-card">
 				<h2>ripple</h2>
 				<p>
-					A fast web proxy with a monochrome-smooth interface. Powered by
-					<b>Ultraviolet</b> over the <b>wisp</b> protocol with the epoxy transport.
+					A fast web proxy with its own hand-drawn icon set and themes. Powered
+					by <b>Ultraviolet</b> over the <b>wisp</b> protocol with the epoxy
+					transport.
 				</p>
 				<p id="about-status"></p>
 				<button class="modal-close" id="about-close">Done</button>

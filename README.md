@@ -55,11 +55,15 @@ point the deployment at it for a fully self-owned setup.
 jsDelivr refuses to serve `.html` (it's sent as `text/plain`), but it serves
 `.svg` normally — and a top-level SVG document is a real scripting context with
 full HTML rendering via `foreignObject`. So the app lives in a single SVG file
-and runs **entirely on cdn.jsdelivr.net's own origin**, service worker included:
+that fetches `index.html` at runtime and boots the whole thing (UI, service
+worker, proxied pages) **entirely on cdn.jsdelivr.net's own origin**:
 
 ```
-https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.0/static/cdn.svg
+https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.1/static/cdn.svg
 ```
+
+The page also loads its app script from jsDelivr in `static/jsdelivr.html`
+(the `sw.js`/`uv/` files must stay same-origin by browser rule).
 
 Gotchas this build works around (see `static/cdn.svg` and `static/cdn-config.js`):
 
@@ -67,15 +71,15 @@ Gotchas this build works around (see `static/cdn.svg` and `static/cdn-config.js`
   need — so the page uses an eval-free inline copy of the XOR codec
   (`cdn-config.js`); the real bundle still loads inside the service worker,
   where CSP doesn't apply.
-- SVG documents have no `document.body` and create SVG-namespaced elements —
-  both are polyfilled inline at the top of `cdn.svg`.
-- `register()`'s promise can stall in SVG documents — activation is confirmed
-  by polling instead.
+- SVG documents have no `document.body`, create SVG-namespaced elements, and
+  `register()`'s promise can stall — all polyfilled/worked around inline.
 
 **Updating:** jsDelivr caches `@main` for up to 12h. Tag a new version instead
-(`git tag v1.1 && git push origin v1.1`) and use `@v1.1` — new tags are served
+(`git tag v1.2 && git push origin v1.2`) and use `@v1.2` — new tags are served
 immediately. You can also purge a path via
 `https://purge.jsdelivr.net/gh/CozyPenguin/ripple-proxy@main/static/<file>`.
+`scripts/sync-ui.cjs` regenerates `public/` and `static/jsdelivr.html` from the
+canonical `static/index.html` after UI edits.
 
 ## Use your own PC as the wisp server
 
