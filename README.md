@@ -50,6 +50,33 @@ The default remote wisp is a third-party community server and may go down —
 swap it in Settings, or self-host this repo's own wisp server (`npm start`) and
 point the deployment at it for a fully self-owned setup.
 
+## Pure jsDelivr build (`static/cdn.svg`)
+
+jsDelivr refuses to serve `.html` (it's sent as `text/plain`), but it serves
+`.svg` normally — and a top-level SVG document is a real scripting context with
+full HTML rendering via `foreignObject`. So the app lives in a single SVG file
+and runs **entirely on cdn.jsdelivr.net's own origin**, service worker included:
+
+```
+https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.0/static/cdn.svg
+```
+
+Gotchas this build works around (see `static/cdn.svg` and `static/cdn-config.js`):
+
+- jsDelivr (and some networks' CSP) block `eval`, which parts of the UV bundle
+  need — so the page uses an eval-free inline copy of the XOR codec
+  (`cdn-config.js`); the real bundle still loads inside the service worker,
+  where CSP doesn't apply.
+- SVG documents have no `document.body` and create SVG-namespaced elements —
+  both are polyfilled inline at the top of `cdn.svg`.
+- `register()`'s promise can stall in SVG documents — activation is confirmed
+  by polling instead.
+
+**Updating:** jsDelivr caches `@main` for up to 12h. Tag a new version instead
+(`git tag v1.1 && git push origin v1.1`) and use `@v1.1` — new tags are served
+immediately. You can also purge a path via
+`https://purge.jsdelivr.net/gh/CozyPenguin/ripple-proxy@main/static/<file>`.
+
 ## Use your own PC as the wisp server
 
 ```sh
