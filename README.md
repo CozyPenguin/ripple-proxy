@@ -50,6 +50,22 @@ The default remote wisp is a third-party community server and may go down —
 swap it in Settings, or self-host this repo's own wisp server (`npm start`) and
 point the deployment at it for a fully self-owned setup.
 
+## Use your own PC as the wisp server
+
+```sh
+npm run tunnel
+```
+
+Starts the local proxy server plus a Cloudflare quick tunnel (no account
+needed; requires [cloudflared](https://developers.cloudflare.com/cloudflare/one/connections/connect-networks/downloads/)
+— `winget install Cloudflare.cloudflared`), then publishes the resulting
+`wss://…trycloudflare.com/wisp/` endpoint to `static/wisp-config.json` and pushes
+it. The live deployment discovers it automatically and routes through your
+machine until you press Ctrl+C (which reverts the live config to the fallback
+community server). Quick-tunnel hostnames change on every run — the script
+handles that for you; for a permanent endpoint, use a named Cloudflare Tunnel
+with your own domain.
+
 ## Docker
 
 ```sh
