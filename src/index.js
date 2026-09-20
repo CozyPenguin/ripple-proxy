@@ -29,6 +29,7 @@ app.use(
 );
 app.use("/epoxy/", express.static(epoxyPath));
 app.use("/baremux/", express.static(baremuxPath));
+app.use("/static/", express.static(join(root, "static")));
 
 app.use((req, res) => {
 	res.status(404);

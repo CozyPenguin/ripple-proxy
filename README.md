@@ -26,6 +26,26 @@ proxy or deploy behind TLS.
 | -------- | -------- | ---------------- |
 | `PORT`   | `8080`   | HTTP listen port |
 
+## Static deployment (jsDelivr / GitHub Pages / any CDN)
+
+The `static/` folder is a **fully standalone build** that needs no Node server at
+all: the whole proxy runs in your browser via the service worker, and traffic
+tunnels through a **wisp server** you choose (default: Mercury Workshop's public
+instance — swap it in **Settings → Wisp server**; on localhost it auto-uses the
+bundled server's `/wisp/` endpoint).
+
+Once pushed to GitHub, it works straight off jsDelivr:
+
+```
+https://cdn.jsdelivr.net/gh/CozyPenguin/uv-proxy@main/static/index.html
+```
+
+(For your own fork, swap the username.) All paths are computed from the page's
+own URL, so any static host and any folder depth works. Note jsDelivr caches
+aggressively — after an update, expect the old version for up to 12h on `@main`
+(or use a commit hash / release tag to pin). For the best experience run the
+Node server above instead: it keeps traffic on your own wisp endpoint.
+
 ## Docker
 
 ```sh
@@ -47,6 +67,9 @@ src/index.js        express + wisp server (serves UI, /epoxy/, /baremux/, /wisp/
 public/             the liquid UI (vanilla HTML/CSS/JS, no build step)
 public/uv/          vendored Ultraviolet v3 client build + uv.config.js
 public/baremux, public/epoxy  served from node_modules by the server
+static/             standalone build for static CDNs (jsDelivr, GitHub Pages):
+                    vendored uv/baremux/epoxy + self-locating uv.config.js;
+                    tunnels through a configurable remote wisp server
 ```
 
 ## Updating the Ultraviolet client
