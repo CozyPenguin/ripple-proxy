@@ -1,0 +1,5 @@
+{
+	"wisp": "wss://exposed-insider-nitrogen-appointed.trycloudflare.com/wisp/",
+	"updated": "2026-09-20T19:07:00Z",
+	"note": "Auto-updated by scripts/tunnel.cjs when the local tunnel restarts."
+}

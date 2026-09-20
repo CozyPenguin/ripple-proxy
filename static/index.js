@@ -34,20 +34,43 @@ let nextTabId = 1;
 
 const DEFAULT_PUBLIC_WISP = "wss://ela.next-education-learning.sbs/wisp/";
 
+function isLocalHost() {
+	return ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+}
+
+// On localhost, use the bundled server. Elsewhere, prefer the wisp endpoint
+// published in wisp-config.json (kept current by scripts/tunnel.cjs when the
+// owner's machine is running its Cloudflare tunnel), falling back to the
+// default community server.
 function defaultWisp() {
-	// Behind the bundled Node server, use its own /wisp/ endpoint.
-	if (["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) {
+	if (isLocalHost()) {
 		return (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
 	}
 	return DEFAULT_PUBLIC_WISP;
 }
 
-function getWisp() {
+function getStoredWisp() {
 	try {
-		return localStorage.getItem("ripple-wisp") || defaultWisp();
+		return localStorage.getItem("ripple-wisp") || "";
 	} catch {
-		return defaultWisp();
+		return "";
 	}
+}
+
+async function discoverWisp() {
+	if (isLocalHost()) return defaultWisp();
+	try {
+		const res = await fetch(ROOT + "wisp-config.json?cb=" + Date.now(), { cache: "no-store" });
+		const cfg = await res.json();
+		if (cfg && typeof cfg.wisp === "string" && /^wss:\/\//.test(cfg.wisp)) {
+			return cfg.wisp;
+		}
+	} catch {}
+	return DEFAULT_PUBLIC_WISP;
+}
+
+function getWisp() {
+	return getStoredWisp() || defaultWisp();
 }
 
 /* ---------- tabs ---------- */
@@ -160,8 +183,10 @@ window.addEventListener("load", async () => {
 	setStatus("", "Starting…");
 	try {
 		await registerSW();
+		// Stored user choice > wisp-config.json (owner's tunnel) > default server.
+		const wispUrl = getStoredWisp() || (await discoverWisp());
 		if ((await connection.getTransport()) !== ROOT + "epoxy/index.mjs") {
-			await connection.setTransport(ROOT + "epoxy/index.mjs", [{ wisp: getWisp() }]);
+			await connection.setTransport(ROOT + "epoxy/index.mjs", [{ wisp: wispUrl }]);
 		}
 		ready = true;
 		setStatus("ready", "Connected");
