@@ -59,7 +59,7 @@ that fetches `index.html` at runtime and boots the whole thing (UI, service
 worker, proxied pages) **entirely on cdn.jsdelivr.net's own origin**:
 
 ```
-https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.1/static/cdn.svg
+https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.2/static/cdn.svg
 ```
 
 The page also loads its app script from jsDelivr in `static/jsdelivr.html`
