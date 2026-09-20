@@ -32,7 +32,7 @@ let nextTabId = 1;
 
 /* ---------- wisp server ---------- */
 
-const DEFAULT_PUBLIC_WISP = "wss://wisp.mercuryworkshop.network/";
+const DEFAULT_PUBLIC_WISP = "wss://ela.next-education-learning.sbs/wisp/";
 
 function defaultWisp() {
 	// Behind the bundled Node server, use its own /wisp/ endpoint.
