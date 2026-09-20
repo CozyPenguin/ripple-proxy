@@ -1,3 +1,4 @@
+// v1.2 — redirect:manual (capture Set-Cookie on every hop; fixes OAuth sign-in loops)
 /*global UVServiceWorker,__uv$config*/
 /*
  * Stock service worker script.

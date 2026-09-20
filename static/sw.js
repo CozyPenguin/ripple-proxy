@@ -1,3 +1,4 @@
+// v1.2 — redirect:manual (capture Set-Cookie on every hop; fixes OAuth sign-in loops)
 // Service worker for the static deployment. Lives at the app root so its
 // scope covers both /sw.js, the app, and the /service/ proxied prefix.
 importScripts("uv/uv.bundle.js");
