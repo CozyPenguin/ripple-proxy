@@ -100,7 +100,9 @@
 				await exec("cdn-config.js", () => window.__uv$config);
 				await exec("register-sw.js", () => typeof window.registerSW === "function");
 				await exec("search.js", () => typeof window.search === "function");
-				await exec("index.js");
+				// index.js builds the theme swatches at top level — that's our
+				// signal it has executed (external SVG scripts give no load event)
+				await exec("index.js", () => document.querySelectorAll(".swatch").length > 0);
 
 				// 3. dynamic loading happens after the document's load event —
 				//    re-emit it so the app's boot listener runs.
