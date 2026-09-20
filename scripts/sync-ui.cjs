@@ -10,7 +10,7 @@ const root = path.join(__dirname, "..");
 const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
 const write = (p, s) => fs.writeFileSync(path.join(root, p), s);
 
-const CDN = "https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.1/static";
+const CDN = "https://cdn.jsdelivr.net/gh/CozyPenguin/ripple-proxy@v1.2/static";
 const page = read("static/index.html");
 
 // ---- public/index.html : same body, Node-server head ----

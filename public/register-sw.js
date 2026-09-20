@@ -13,5 +13,5 @@ async function registerSW() {
 	if (!navigator.serviceWorker) {
 		throw new Error("This browser does not support service workers.");
 	}
-	await navigator.serviceWorker.register("/uv/sw.js");
+	await navigator.serviceWorker.register("/uv/sw.js", { updateViaCache: "none" });
 }

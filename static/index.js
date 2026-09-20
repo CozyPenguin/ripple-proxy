@@ -310,6 +310,18 @@ function loadIntoFrame(url) {
 window.addEventListener("load", async () => {
 	setStatus("", "Starting…");
 	try {
+		// One-time-per-session service worker refresh: guarantees version
+		// updates take effect (stale workers were a recurring failure) and
+		// that registrations carry the updateViaCache:none flag. Also cleans
+		// up registrations left by old versions/scopes.
+		try {
+			if (!sessionStorage.getItem("ripple-sw-fresh")) {
+				sessionStorage.setItem("ripple-sw-fresh", "1");
+				const regs = await navigator.serviceWorker.getRegistrations();
+				await Promise.all(regs.map((r) => r.unregister()));
+			}
+		} catch {}
+
 		await registerSW();
 		// Probe stored > discovered (owner's tunnel) > default; use the first
 		// server that actually accepts a connection.
@@ -537,6 +549,26 @@ frame.addEventListener("load", () => {
 	}
 	renderTabs();
 });
+
+/* ---------- SW debug bridge (hop log readable from the page) ---------- */
+
+window.__rippleDebugLog = null;
+
+function requestDebugLog() {
+	return new Promise((resolve) => {
+		if (!navigator.serviceWorker?.controller) return resolve(null);
+		const onMsg = (e) => {
+			if (e.data && e.data.type === "ripple-debug") {
+				navigator.serviceWorker.removeEventListener("message", onMsg);
+				window.__rippleDebugLog = e.data.log;
+				resolve(e.data.log);
+			}
+		};
+		navigator.serviceWorker.addEventListener("message", onMsg);
+		navigator.serviceWorker.controller.postMessage("ripple-debug");
+		setTimeout(() => resolve(window.__rippleDebugLog), 2500);
+	});
+}
 
 /* ---------- start ---------- */
 

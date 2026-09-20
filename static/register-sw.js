@@ -18,7 +18,7 @@ async function registerSW() {
 	// Fire-and-forget: register()'s promise itself can stall in some document
 	// types (observed in top-level SVG documents), so activation is confirmed
 	// by polling getRegistration().
-	navigator.serviceWorker.register("sw.js").catch(() => {});
+	navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).catch(() => {});
 	const start = Date.now();
 	for (;;) {
 		const reg = await navigator.serviceWorker.getRegistration();
