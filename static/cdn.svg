@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Ripple — jsDelivr-hosted build (static/cdn.svg).
+
+	cdn.jsdelivr.net refuses to serve .html (text/plain), but serves .svg
+	normally. A top-level SVG document is a real scripting context, and
+	foreignObject renders full HTML — so the entire app lives in this SVG on
+	jsDelivr's own origin. The service worker registers from the same origin
+	(required by browsers), so proxied pages are served on cdn.jsdelivr.net
+	too. This is the only way a pure-jsDelivr deployment can exist.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+	<style>@import url("style.css");</style>
+	<foreignObject width="100%" height="100%">
+		<body xmlns="http://www.w3.org/1999/xhtml" style="width:100vw;height:100vh;display:flex;overflow:hidden;background:#000000;color:#f2f2f2;">
+			<aside id="sidebar">
+				<button class="side-row" id="btn-new-tab">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+					<span>New Tab</span>
+				</button>
+				<div id="tab-list"></div>
+				<div class="sidebar-bottom">
+					<button class="side-row" id="btn-settings">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+						<span>Settings</span>
+					</button>
+					<button class="side-row" id="btn-about">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
+						<span>About</span>
+					</button>
+				</div>
+			</aside>
+
+			<div id="main">
+				<header id="topbar">
+					<div class="nav-group">
+						<button class="ib" id="btn-back" title="Back">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						</button>
+						<button class="ib" id="btn-forward" title="Forward">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						</button>
+						<button class="ib" id="btn-reload" title="Reload">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 3v4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						</button>
+					</div>
+					<form id="bar-form">
+						<div class="address-pill">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 9h17M3.5 15h17M12 4a13 13 0 0 1 0 16M12 4a13 13 0 0 0 0 16" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+							<input id="bar-address" type="text" spellcheck="false" placeholder="Search or enter address" />
+						</div>
+					</form>
+					<div class="nav-group">
+						<button class="ib" id="btn-open" title="Open in new window">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"><path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+						</button>
+					</div>
+				</header>
+
+				<section id="home">
+					<div class="wordmark">ripple</div>
+					<form id="uv-form">
+						<div class="search-pill">
+							<svg xmlns="http://www.w3.org/2000/svg" class="sp-icon" viewBox="0 0 24 24" width="17" height="17"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+							<input id="uv-address" type="text" placeholder="Search or enter address" spellcheck="false" />
+							<select id="uv-search-engine" title="Search engine">
+								<option value="https://duckduckgo.com/?q=%s" selected="selected">DuckDuckGo</option>
+								<option value="https://www.google.com/search?q=%s">Google</option>
+								<option value="https://www.bing.com/search?q=%s">Bing</option>
+								<option value="https://search.brave.com/search?q=%s">Brave</option>
+							</select>
+							<button class="go" type="submit">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+							</button>
+						</div>
+					</form>
+					<p id="uv-error" class="error" hidden="hidden"></p>
+					<div class="quicklinks">
+						<button data-url="https://www.google.com"><span class="tile"><img src="icons/google.com.png" alt="" /></span>Google</button>
+						<button data-url="https://www.youtube.com"><span class="tile"><img src="icons/youtube.com.png" alt="" /></span>YouTube</button>
+						<button data-url="https://discord.com"><span class="tile"><img src="icons/discord.com.png" alt="" /></span>Discord</button>
+						<button data-url="https://www.reddit.com"><span class="tile"><img src="icons/reddit.com.png" alt="" /></span>Reddit</button>
+						<button data-url="https://open.spotify.com"><span class="tile"><img src="icons/open.spotify.com.png" alt="" /></span>Spotify</button>
+						<button data-url="https://github.com"><span class="tile"><img src="icons/github.com.png" alt="" /></span>GitHub</button>
+					</div>
+				</section>
+
+				<section id="viewport" hidden="hidden">
+					<div id="progress"><span></span></div>
+					<iframe id="uv-frame" title="Proxied page" allow="fullscreen"></iframe>
+				</section>
+			</div>
+
+			<div id="status">
+				<span class="dot" id="sw-dot"></span>
+				<span id="sw-text">Starting…</span>
+			</div>
+
+			<div class="modal" id="settings-modal" hidden="hidden">
+				<div class="modal-card">
+					<h2>Settings</h2>
+					<label class="modal-row">
+						<span>Search engine</span>
+						<select id="engine-mirror">
+							<option value="https://duckduckgo.com/?q=%s">DuckDuckGo</option>
+							<option value="https://www.google.com/search?q=%s">Google</option>
+							<option value="https://www.bing.com/search?q=%s">Bing</option>
+							<option value="https://search.brave.com/search?q=%s">Brave</option>
+						</select>
+					</label>
+					<label class="modal-row">
+						<span>Wisp server</span>
+						<input id="wisp-url" type="text" spellcheck="false" placeholder="wss://…" />
+					</label>
+					<p class="modal-hint">
+						Use <b>wss://</b> on https sites and <b>ws://</b> on http sites
+						(like localhost). Wrong scheme = pages won't load.
+					</p>
+					<button class="modal-close" id="settings-save">Save</button>
+				</div>
+			</div>
+
+			<div class="modal" id="about-modal" hidden="hidden">
+				<div class="modal-card">
+					<h2>ripple</h2>
+					<p>
+						A fast web proxy running entirely on <b>cdn.jsdelivr.net</b> — the
+						page, its service worker and proxied pages all live on this origin
+						(hosted as SVG because jsDelivr refuses to serve HTML). Powered by
+						<b>Ultraviolet</b> over <b>wisp</b>.
+					</p>
+					<p id="about-status"></p>
+					<button class="modal-close" id="about-close">Done</button>
+				</div>
+			</div>
+		</body>
+	</foreignObject>
+	<script><![CDATA[
+		// In an SVG document, createElement() produces SVG-namespaced elements.
+		// The app and CSS expect HTML elements, so retarget it globally.
+		const __origCreate = document.createElement.bind(document);
+		document.createElement = function (tag) {
+			return document.createElementNS("http://www.w3.org/1999/xhtml", tag);
+		};
+		void __origCreate;
+	]]></script>
+	<script href="register-sw.js" />
+	<script href="search.js" />
+	<script href="index.js" />
+</svg>
