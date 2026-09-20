@@ -3,15 +3,15 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Ripple — Liquid Proxy</title>
+		<title>Ripple</title>
 		<meta
 			name="description"
 			content="Ripple is a fast web proxy with a liquid-smooth interface, powered by Ultraviolet and the wisp protocol."
 		/>
-		<meta name="theme-color" content="#0b0f1a" />
+		<meta name="theme-color" content="#000000" />
 		<link
 			rel="icon"
-			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%23a78bfa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='26' fill='none' stroke='url(%23g)' stroke-width='6' opacity='.35'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='url(%23g)' stroke-width='6'/%3E%3C/svg%3E"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='24' fill='none' stroke='white' stroke-width='6' opacity='.35'/%3E%3Ccircle cx='32' cy='32' r='13' fill='none' stroke='white' stroke-width='6'/%3E%3C/svg%3E"
 		/>
 		<link rel="stylesheet" href="style.css" />
 		<script src="/baremux/index.js"></script>
@@ -19,41 +19,62 @@
 		<script src="/uv/uv.config.js"></script>
 	</head>
 	<body>
-		<div class="liquid-bg" aria-hidden="true">
-			<div class="blob blob-1"></div>
-			<div class="blob blob-2"></div>
-			<div class="blob blob-3"></div>
-			<div class="blob blob-4"></div>
-			<div class="surface"></div>
-		</div>
+		<!-- sidebar -->
+		<aside id="sidebar">
+			<button class="side-row" id="btn-new-tab">
+				<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+				<span>New Tab</span>
+			</button>
+			<div id="tab-list"></div>
+			<div class="sidebar-bottom">
+				<button class="side-row" id="btn-settings">
+					<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+					<span>Settings</span>
+				</button>
+				<button class="side-row" id="btn-about">
+					<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
+					<span>About</span>
+				</button>
+			</div>
+		</aside>
 
-		<main id="hero">
-			<section class="card">
-				<div class="logo">
-					<svg viewBox="0 0 64 64" width="72" height="72" aria-hidden="true">
-						<defs>
-							<linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-								<stop offset="0" stop-color="#22d3ee" />
-								<stop offset="1" stop-color="#a78bfa" />
-							</linearGradient>
-						</defs>
-						<circle cx="32" cy="32" r="26" fill="none" stroke="url(#lg)" stroke-width="5" opacity=".3" />
-						<circle cx="32" cy="32" r="16" fill="none" stroke="url(#lg)" stroke-width="5" />
-					</svg>
+		<!-- main column -->
+		<div id="main">
+			<header id="topbar">
+				<div class="nav-group">
+					<button class="ib" id="btn-back" title="Back" aria-label="Back">
+						<svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</button>
+					<button class="ib" id="btn-forward" title="Forward" aria-label="Forward">
+						<svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</button>
+					<button class="ib" id="btn-reload" title="Reload" aria-label="Reload">
+						<svg viewBox="0 0 24 24" width="15" height="15"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 3v4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</button>
 				</div>
-				<h1>Ripple</h1>
-				<p class="tagline">The web, unblocked — fast and liquid-smooth.</p>
+				<form id="bar-form" autocomplete="off">
+					<div class="address-pill">
+						<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 9h17M3.5 15h17M12 4a13 13 0 0 1 0 16M12 4a13 13 0 0 0 0 16" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+						<input id="bar-address" type="text" spellcheck="false" placeholder="Search or enter address" />
+					</div>
+				</form>
+				<div class="nav-group">
+					<button class="ib" id="btn-open" title="Open in new window" aria-label="Open in new window">
+						<svg viewBox="0 0 24 24" width="15" height="15"><path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+					</button>
+				</div>
+			</header>
 
+			<!-- new tab / home -->
+			<section id="home">
+				<div class="wordmark">ripple</div>
 				<form id="uv-form" autocomplete="off">
-					<div class="omnibox">
-						<svg class="omni-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-							<circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
-							<line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
+					<div class="search-pill">
+						<svg class="sp-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
 						<input
 							id="uv-address"
 							type="text"
-							placeholder="Search or enter a URL…"
+							placeholder="Search or enter address"
 							spellcheck="false"
 							autofocus
 						/>
@@ -63,56 +84,64 @@
 							<option value="https://www.bing.com/search?q=%s">Bing</option>
 							<option value="https://search.brave.com/search?q=%s">Brave</option>
 						</select>
+						<button class="go" type="submit" aria-label="Go">
+							<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+						</button>
 					</div>
-					<button class="go" type="submit">Go</button>
 				</form>
-
 				<p id="uv-error" class="error" hidden></p>
-
 				<div class="quicklinks">
-					<button data-url="https://www.google.com"><span class="tile g">G</span>Google</button>
-					<button data-url="https://www.youtube.com"><span class="tile yt">▶</span>YouTube</button>
-					<button data-url="https://discord.com"><span class="tile di">D</span>Discord</button>
-					<button data-url="https://www.reddit.com"><span class="tile re">R</span>Reddit</button>
-					<button data-url="https://open.spotify.com"><span class="tile sp">♪</span>Spotify</button>
-					<button data-url="https://github.com"><span class="tile gh"><svg viewBox="0 0 16 16" width="20" height="20" fill="#fff" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></span>GitHub</button>
+					<button data-url="https://www.google.com"><span class="tile">G</span>Google</button>
+					<button data-url="https://www.youtube.com"><span class="tile">▶</span>YouTube</button>
+					<button data-url="https://discord.com"><span class="tile">D</span>Discord</button>
+					<button data-url="https://www.reddit.com"><span class="tile">R</span>Reddit</button>
+					<button data-url="https://open.spotify.com"><span class="tile">♪</span>Spotify</button>
+					<button data-url="https://github.com"><span class="tile">⌂</span>GitHub</button>
 				</div>
 			</section>
 
-			<footer class="status">
-				<span class="dot" id="sw-dot"></span>
-				<span id="sw-text">Starting…</span>
-				<span class="powered">Powered by Ultraviolet</span>
-			</footer>
-		</main>
+			<!-- proxied viewport -->
+			<section id="viewport" hidden>
+				<div id="progress"><span></span></div>
+				<iframe id="uv-frame" title="Proxied page" allow="fullscreen"></iframe>
+			</section>
+		</div>
 
-		<header id="browserbar" hidden>
-			<div class="bar-inner">
-				<button class="ib" id="btn-back" title="Back" aria-label="Back">
-					<svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-				</button>
-				<button class="ib" id="btn-forward" title="Forward" aria-label="Forward">
-					<svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-				</button>
-				<button class="ib" id="btn-reload" title="Reload" aria-label="Reload">
-					<svg viewBox="0 0 24 24" width="16" height="16"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M20 3v4h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-				</button>
-				<button class="ib" id="btn-home" title="Home" aria-label="Home">
-					<svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 11l8-7 8 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-				</button>
-				<form id="bar-form" autocomplete="off">
-					<input id="bar-address" type="text" spellcheck="false" placeholder="Search or enter a URL…" />
-				</form>
-				<button class="ib" id="btn-open" title="Open in new tab" aria-label="Open in new tab">
-					<svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 4h6v6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4l-9 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-				</button>
+		<!-- status toast -->
+		<div id="status" title="">
+			<span class="dot" id="sw-dot"></span>
+			<span id="sw-text">Starting…</span>
+		</div>
+
+		<!-- settings modal -->
+		<div class="modal" id="settings-modal" hidden>
+			<div class="modal-card">
+				<h2>Settings</h2>
+				<label class="modal-row">
+					<span>Search engine</span>
+					<select id="engine-mirror">
+						<option value="https://duckduckgo.com/?q=%s">DuckDuckGo</option>
+						<option value="https://www.google.com/search?q=%s">Google</option>
+						<option value="https://www.bing.com/search?q=%s">Bing</option>
+						<option value="https://search.brave.com/search?q=%s">Brave</option>
+					</select>
+				</label>
+				<button class="modal-close" id="settings-close">Done</button>
 			</div>
-			<div id="progress"><span></span></div>
-		</header>
+		</div>
 
-		<section id="browser" hidden>
-			<iframe id="uv-frame" title="Proxied page" allow="fullscreen"></iframe>
-		</section>
+		<!-- about modal -->
+		<div class="modal" id="about-modal" hidden>
+			<div class="modal-card">
+				<h2>ripple</h2>
+				<p>
+					A fast web proxy with a monochrome-smooth interface. Powered by
+					<b>Ultraviolet</b> over the <b>wisp</b> protocol with the epoxy transport.
+				</p>
+				<p id="about-status"></p>
+				<button class="modal-close" id="about-close">Done</button>
+			</div>
+		</div>
 
 		<script src="register-sw.js"></script>
 		<script src="search.js"></script>
