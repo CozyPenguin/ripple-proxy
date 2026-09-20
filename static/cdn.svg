@@ -138,13 +138,18 @@
 		</body>
 	</foreignObject>
 	<script><![CDATA[
-		// In an SVG document, createElement() produces SVG-namespaced elements.
-		// The app and CSS expect HTML elements, so retarget it globally.
-		const __origCreate = document.createElement.bind(document);
+		// In an SVG document, createElement() produces SVG-namespaced elements
+		// and document.body is null. The app and CSS expect HTML behavior, so
+		// retarget both.
 		document.createElement = function (tag) {
 			return document.createElementNS("http://www.w3.org/1999/xhtml", tag);
 		};
-		void __origCreate;
+		Object.defineProperty(document, "body", {
+			configurable: true,
+			get() {
+				return document.getElementsByTagNameNS("http://www.w3.org/1999/xhtml", "body")[0];
+			},
+		});
 	]]></script>
 	<script href="register-sw.js" />
 	<script href="search.js" />
