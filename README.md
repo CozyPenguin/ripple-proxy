@@ -26,25 +26,29 @@ proxy or deploy behind TLS.
 | -------- | -------- | ---------------- |
 | `PORT`   | `8080`   | HTTP listen port |
 
-## Static deployment (jsDelivr / GitHub Pages / any CDN)
+## Static deployment (GitHub Pages / any static host)
 
 The `static/` folder is a **fully standalone build** that needs no Node server at
 all: the whole proxy runs in your browser via the service worker, and traffic
-tunnels through a **wisp server** you choose (default: Mercury Workshop's public
-instance — swap it in **Settings → Wisp server**; on localhost it auto-uses the
-bundled server's `/wisp/` endpoint).
+tunnels through a **wisp server** you choose in **Settings → Wisp server**
+(`wss://` on https hosts, `ws://` on http/localhost — the wrong scheme will not
+connect). On localhost it auto-uses the bundled server's `/wisp/` endpoint.
 
-Once pushed to GitHub, it works straight off jsDelivr:
+**Live deployment** (this repo has GitHub Pages enabled on `main`):
 
 ```
-https://cdn.jsdelivr.net/gh/CozyPenguin/uv-proxy@main/static/index.html
+https://cozypenguin.github.io/ripple-proxy/static/index.html
 ```
 
-(For your own fork, swap the username.) All paths are computed from the page's
-own URL, so any static host and any folder depth works. Note jsDelivr caches
-aggressively — after an update, expect the old version for up to 12h on `@main`
-(or use a commit hash / release tag to pin). For the best experience run the
-Node server above instead: it keeps traffic on your own wisp endpoint.
+Why not jsDelivr? `cdn.jsdelivr.net` serves `.html` as `text/plain` (deliberate
+security policy), so a service-worker app can't run on it directly — jsDelivr
+still works great for the raw JS/asset files. GitHub Pages, Netlify, Vercel or
+Cloudflare Pages all host the folder as-is; all paths are computed from the
+page's own URL, so any host and folder depth works.
+
+The default remote wisp is a third-party community server and may go down —
+swap it in Settings, or self-host this repo's own wisp server (`npm start`) and
+point the deployment at it for a fully self-owned setup.
 
 ## Docker
 
