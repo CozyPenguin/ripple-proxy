@@ -34,14 +34,9 @@ self.Ultraviolet = {
 	},
 };
 
-// Self-locate: as a page script, document.currentScript is this file, which
-// sits in static/uv/ — one level below the app root.
-let root;
-if (document.currentScript && document.currentScript.src) {
-	root = new URL("../", document.currentScript.src).pathname;
-} else {
-	root = new URL("uv/", document.baseURI).pathname;
-}
+// Self-locate: this file lives next to cdn.svg at the app root. SVG documents
+// don't populate document.currentScript, so derive from the page URL.
+const root = new URL("./", document.baseURI).pathname;
 
 self.__uv$config = {
 	prefix: root + "service/",
